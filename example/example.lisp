@@ -6,6 +6,6 @@
 (sdl-renderer-present +renderer+)
 
 (progn (defparameter +event1+ (sdl-wait-event))
-       (sdl-event-plist +event1+))
+       (print +event1+)
 
 (sdl-destroy-window +window1+)

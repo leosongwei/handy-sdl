@@ -55,25 +55,8 @@
 ;; --------------------------------------------------
 ;; Event
 
-(defstruct sdl-event
-  (ptr #.(null-pointer))
-  (type nil))
-
-(defun sdl-wait-event ()
-  (with-foreign-object (c-sdl-event '(:struct c-sdl-event))
-    (let ((return-code (c-sdl-wait-event c-sdl-event)))
-      (if (not (= return-code 1))
-          (error 'sdl-error :message (c-sdl-get-error)))
-      (let ((copied-event (foreign-alloc '(:struct c-sdl-event)))
-            (type-symbol (foreign-enum-keyword 'c-sdl-event-type
-                                               (foreign-slot-value
-                                                c-sdl-event '(:struct c-sdl-event) :type))))
-        (copy-foreign-object c-sdl-event copied-event '(:struct c-sdl-event))
-        (make-sdl-event :ptr copied-event :type type-symbol)))))
-
-(defun sdl-window-event-plist (sdl-event)
-  (let* ((property (getf (convert-from-foreign (sdl-event-ptr sdl-event)
-                                               '(:struct c-sdl-event))
+(defun sdl-window-event-plist (c-sdl-event)
+  (let* ((property (getf (convert-from-foreign c-sdl-event '(:struct c-sdl-event))
                          :window))
          (event (foreign-enum-keyword 'c-sdl-window-event-id (getf property :event))))
     `(:type :SDL_WINDOWEVENT
@@ -83,21 +66,23 @@
             :data1 ,(getf property :data1)
             :data2 ,(getf property :data2))))
 
-(defun sdl-mouse-motion-event-plist (sdl-event)
-  (let* ((property (getf (convert-from-foreign (sdl-event-ptr sdl-event)
-                                               '(:struct c-sdl-event))
+(defun sdl-mouse-motion-event-plist (c-sdl-event)
+  (let* ((property (getf (convert-from-foreign c-sdl-event '(:struct c-sdl-event))
                          :motion)))
     (setf (getf property :type) :SDL_MOUSEMOTION)
     property))
 
-(defun sdl-event-plist (sdl-event)
-  (let* ((type-code (foreign-slot-value (sdl-event-ptr sdl-event)
-                                        '(:struct c-sdl-event)
-                                        :type))
+(defun sdl-event-plist (c-sdl-event)
+  (let* ((type-code (foreign-slot-value c-sdl-event '(:struct c-sdl-event) :type))
          (type (foreign-enum-keyword 'c-sdl-event-type type-code)))
     (case type
-      (:SDL_WINDOWEVENT (sdl-window-event-plist sdl-event))
-      (:SDL_MOUSEMOTION (sdl-mouse-motion-event-plist sdl-event))
+      (:SDL_WINDOWEVENT (sdl-window-event-plist c-sdl-event))
+      (:SDL_MOUSEMOTION (sdl-mouse-motion-event-plist c-sdl-event))
       (otherwise `(:type ,type)))))
 
-;; todo: refactor: free event when got the event
+(defun sdl-wait-event ()
+  (with-foreign-object (c-sdl-event '(:struct c-sdl-event))
+    (let ((return-code (c-sdl-wait-event c-sdl-event)))
+      (if (not (= return-code 1))
+          (error 'sdl-error :message (c-sdl-get-error)))
+      (sdl-event-plist c-sdl-event))))
