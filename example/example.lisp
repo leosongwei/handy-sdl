@@ -12,5 +12,3 @@
 
 (sdl-destroy-window +window1+)
 
-
-

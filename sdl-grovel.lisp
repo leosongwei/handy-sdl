@@ -117,6 +117,9 @@
          (:sym "sym" :type c-sdl-keycode)
          (:mod "mod" :type :uint16))
 
+(constant (+SDL_PRESSED+ "SDL_PRESSED"))
+(constant (+SDL_RELEASED+ "SDL_RELEASED"))
+
 ;; ---------------------------------------------
 ;; Event
 
