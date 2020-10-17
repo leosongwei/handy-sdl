@@ -5,12 +5,7 @@
 (sdl-renderer-clear +renderer+)
 (sdl-renderer-present +renderer+)
 
-(defparameter +event1+ (sdl-wait-event))
-(print +event1+)
-
-(foreign-enum-keyword 'c-sdl-window-event-id
- (foreign-slot-value (sdl-event-ptr +event1+) '(:struct c-sdl-event) 'type))
-
-
+(progn (defparameter +event1+ (sdl-wait-event))
+       (sdl-event-plist +event1+))
 
 (sdl-destroy-window +window1+)

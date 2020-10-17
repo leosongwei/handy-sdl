@@ -132,7 +132,19 @@
          (:state "state" :type :uint8)
          (:repeat "repeat" :type :uint8))
 
+(cstruct c-sdl-mouse-motion-event "SDL_MouseMotionEvent"
+         (:type "type" :type :uint32)
+         (:timestamp "timestamp" :type :uint32)
+         (:windowID "windowID" :type :uint32)
+         (:which "which" :type :uint32)
+         (:state "state" :type :uint32)
+         (:x "x" :type :int32)
+         (:y "y" :type :int32)
+         (:xrel "xrel" :type :int)
+         (:yrel "yrel" :type :int))
+
 (cstruct c-sdl-event "SDL_Event"
          (:type "type" :type :uint32)
          (:window "window" :type (:struct c-sdl-window-event))
-         (:key "key" :type (:struct c-sdl-keyboard-event)))
+         (:key "key" :type (:struct c-sdl-keyboard-event))
+         (:motion "motion" :type (:struct c-sdl-mouse-motion-event)))
