@@ -112,7 +112,10 @@
 ;; ---------------------------------------------
 ;; Keyboard
 
-
+(cstruct c-sdl-keysym "SDL_Keysym"
+         (:scancode "scancode" :type c-sdl-scancode)
+         (:sym "sym" :type c-sdl-keycode)
+         (:mod "mod" :type :uint16))
 
 ;; ---------------------------------------------
 ;; Event
@@ -130,7 +133,8 @@
          (:timestamp "timestamp" :type :uint32)
          (:windowID "windowID" :type :uint32)
          (:state "state" :type :uint8)
-         (:repeat "repeat" :type :uint8))
+         (:repeat "repeat" :type :uint8)
+         (:keysym "keysym" :type (:struct c-sdl-keysym)))
 
 (cstruct c-sdl-mouse-motion-event "SDL_MouseMotionEvent"
          (:type "type" :type :uint32)

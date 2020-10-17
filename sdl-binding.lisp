@@ -2,8 +2,9 @@
 (require :cffi-grovel)
 (use-package :cffi)
 
-(load (cffi-grovel:process-grovel-file "sdl-grovel.lisp" "/dev/shm/_sdl.o"))
 (load (cffi-grovel:process-grovel-file "sdl-keyboard-grovel.lisp" "/dev/shm/_sdl_keyboard.o"))
+(load (cffi-grovel:process-grovel-file "sdl-grovel.lisp" "/dev/shm/_sdl.o"))
+
 (load-foreign-library "libSDL2-2.0.so")
 
 (defcfun ("SDL_Init" c-sdl-init) :int (flags :int))
@@ -63,9 +64,11 @@
 
 (defcfun ("SDL_GetError" c-sdl-get-error) :string)
 
-
 ;; --------------------------------------------------------
 ;; Event
 
 (defcfun ("SDL_WaitEvent" c-sdl-wait-event) :int
+  (event (:pointer (:struct c-sdl-event))))
+
+(defcfun ("SDL_PollEvent" c-sdl-poll-event) :int
   (event (:pointer (:struct c-sdl-event))))

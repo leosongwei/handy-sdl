@@ -53,6 +53,23 @@
   (c-sdl-renderpresent (sdl-renderer-ptr sdl-renderer)))
 
 ;; --------------------------------------------------
+;; Keyboard
+
+(defparameter +keymod-values+
+  (mapcar (lambda (keyword)
+            (list keyword (foreign-enum-value 'c-sdl-keymod keyword)))
+          (foreign-enum-keyword-list 'c-sdl-keymod)))
+
+(defun sdl-keymod-list (keymod-num)
+  (let ((result '()))
+    (dolist (mod +keymod-values+)
+      (destructuring-bind (mod-keyword mod-mask) mod
+        (if (not (= 0 (logand mod-mask keymod-num)))
+            (push mod-keyword result))))
+    result))
+;; (sdl-keymod-list #b1111111111000011)
+
+;; --------------------------------------------------
 ;; Event
 
 (defun sdl-window-event-plist (c-sdl-event)
@@ -72,12 +89,29 @@
     (setf (getf property :type) :SDL_MOUSEMOTION)
     property))
 
+(defun sdl-keyboard-event-plist (c-sdl-event)
+  (let* ((event-property (convert-from-foreign c-sdl-event '(:struct c-sdl-event)))
+         (property (getf event-property :key))
+         (type (foreign-enum-keyword 'c-sdl-event-type (getf event-property :type))))
+    (setf (getf property :type) type)
+    (let* ((keysym (getf property :keysym))
+           (scancode-num (getf keysym :scancode))
+           (sym-num (getf keysym :sym))
+           (mod-num (getf keysym :mod)))
+      (setf (getf keysym :scancode)
+            (foreign-enum-keyword 'c-sdl-scancode-enum scancode-num :errorp nil))
+      (setf (getf keysym :sym)
+            (foreign-enum-keyword 'c-sdl-keycode-enum sym-num :errorp nil))
+      (setf (getf keysym :mod) (sdl-keymod-list mod-num)))
+    property))
+
 (defun sdl-event-plist (c-sdl-event)
   (let* ((type-code (foreign-slot-value c-sdl-event '(:struct c-sdl-event) :type))
          (type (foreign-enum-keyword 'c-sdl-event-type type-code)))
     (case type
       (:SDL_WINDOWEVENT (sdl-window-event-plist c-sdl-event))
       (:SDL_MOUSEMOTION (sdl-mouse-motion-event-plist c-sdl-event))
+      ((:SDL_KEYUP :SDL_KEYDOWN) (sdl-keyboard-event-plist c-sdl-event))
       (otherwise `(:type ,type)))))
 
 (defun sdl-wait-event ()
@@ -86,3 +120,13 @@
       (if (not (= return-code 1))
           (error 'sdl-error :message (c-sdl-get-error)))
       (sdl-event-plist c-sdl-event))))
+
+(defun sdl-poll-event ()
+  (with-foreign-object (c-sdl-event '(:struct c-sdl-event))
+    (let ((return-code (c-sdl-poll-event c-sdl-event)))
+      (if (= return-code 1)
+          (sdl-event-plist c-sdl-event)
+          nil))))
+
+(defun sdl-poll-event-list ()
+  (loop as e = (sdl-poll-event) until (null e) collect e))

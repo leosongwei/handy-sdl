@@ -4,7 +4,7 @@
 
 (ctype c-sdl-scancode "SDL_Scancode")
 
-(cenum c-sdl-scancode
+(cenum c-sdl-scancode-enum
        ((:SDL_SCANCODE_UNKNOWN "SDL_SCANCODE_UNKNOWN"))
        ((:SDL_SCANCODE_A "SDL_SCANCODE_A"))
        ((:SDL_SCANCODE_B "SDL_SCANCODE_B"))
@@ -252,7 +252,7 @@
 
 (ctype c-sdl-keycode "SDL_Keycode")
 
-(cenum c-sdl-keycode
+(cenum c-sdl-keycode-enum
        ((:SDLK_UNKNOWN "SDLK_UNKNOWN"))
        ((:SDLK_RETURN "SDLK_RETURN"))
        ((:SDLK_ESCAPE "SDLK_ESCAPE"))
