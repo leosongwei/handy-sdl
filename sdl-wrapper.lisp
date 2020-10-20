@@ -53,6 +53,34 @@
   (c-sdl-renderpresent (sdl-renderer-ptr sdl-renderer)))
 
 ;; --------------------------------------------------
+;; Surface & Texture
+
+(defstruct sdl-texture (ptr #.(null-pointer)))
+(defstruct sdl-surface (ptr #.(null-pointer)))
+
+(defun sdl-free-surface (surface)
+  (c-sdl-freesurface (sdl-surface-ptr surface)))
+
+(defun sdl-create-texture-from-surface (renderer surface)
+  (let ((ptr (c-sdl-create-texture-from-surface
+              (sdl-renderer-ptr renderer)
+              (sdl-surface-ptr surface))))
+    (if (null-pointer-p ptr)
+        (error 'sdl-error :message (c-sdl-get-error)))
+    (make-sdl-texture :ptr ptr)))
+
+(defun sdl-render-copy (renderer texture src-rect dst-rect)
+  ""
+  (let ((c-src-rect (convert-to-foreign src-rect '(:pointer (:struct c-sdl-rect))))
+        (c-dst-rect (convert-to-foreign dst-rect '(:pointer (:struct c-sdl-rect)))))
+    (unwind-protect
+         (c-sdl-render-copy (sdl-renderer-ptr renderer)
+                            (sdl-texture-ptr texture)
+                            c-src-rect c-dst-rect)
+      (foreign-free c-src-rect)
+      (foreign-free c-dst-rect))))
+
+;; --------------------------------------------------
 ;; Keyboard
 
 (defparameter +keymod-values+

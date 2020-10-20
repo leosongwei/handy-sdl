@@ -7,6 +7,8 @@
 (sdl-renderer-clear +renderer+)
 (sdl-renderer-present +renderer+)
 
+(defparameter +surface-tux+ (sdl-load-bmp "tux.bmp"))
+
 (sdl-poll-event-list)
 ;; 1001 is not defined as a value for enum type #<CFFI::FOREIGN-ENUM C-SDL-SCANCODE>.
 

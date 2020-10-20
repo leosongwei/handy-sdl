@@ -102,12 +102,18 @@
          (a-mask "Amask" :type :uint32))
 
 (cstruct c-sdl-Surface "SDL_Surface"
-         (format "format" :type :pointer) ;; SDL_PixelFormat*
+         (format "format" :type (:pointer (:struct c-sdl-pixelformat)))
          (w "w" :type :int)
          (h "h" :type :int)
          (pixels "pixels" :type :pointer)
          (clip-rect "clip_rect" :type :pointer) ;; SDL_Rect
          (refcount "refcount" :type :int))
+
+(cstruct c-sdl-rect "SDL_Rect"
+         (x "x" :type :int)
+         (y "y" :type :int)
+         (w "w" :type :int)
+         (h "h" :type :int))
 
 ;; ---------------------------------------------
 ;; Keyboard
