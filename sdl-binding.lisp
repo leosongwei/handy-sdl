@@ -26,6 +26,18 @@
 (defcfun ("SDL_DestroyWindow" c-sdl-DestroyWindow) :void (window :pointer))
 
 ;; ------------------------------------------------------
+;; Stream IO
+
+(defcfun ("SDL_RWFromFile" c-sdl-rw-from-file) (:pointer (:struct c-sdl-rwops))
+  (file :string) (mode :string))
+
+(defcfun ("SDL_FreeRW" c-sdl-free-rw) :void
+  (area (:pointer (:struct c-sdl-rwops))))
+
+(defcfun ("SDL_LoadBMP_RW" c-sdl-load-bmp-rw) (:pointer (:struct c-sdl-surface))
+  (src (:pointer (:struct c-sdl-rwops))) (freesrc :int))
+
+;; ------------------------------------------------------
 ;; Renderer
 
 (defcfun ("SDL_CreateRenderer" c-sdl-CreateRenderer) :pointer

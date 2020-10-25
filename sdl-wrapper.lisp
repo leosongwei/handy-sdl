@@ -80,6 +80,18 @@
       (foreign-free c-src-rect)
       (foreign-free c-dst-rect))))
 
+(defun sdl-load-bmp (file-path)
+  (with-foreign-string (c-path file-path)
+    (with-foreign-string (c-mode "rb")
+      (let ((rw-ptr (c-sdl-rw-from-file c-path c-mode)))
+        (if (null-pointer-p rw-ptr)
+            (error 'sdl-error :message (c-sdl-get-error)))
+        (let* ((close-rw 1)
+               (surface-ptr (c-sdl-load-bmp-rw rw-ptr close-rw)))
+          (if (null-pointer-p surface-ptr)
+              (error 'sdl-error :message (c-sdl-get-error)))
+          (make-sdl-surface :ptr surface-ptr))))))
+
 ;; --------------------------------------------------
 ;; Keyboard
 

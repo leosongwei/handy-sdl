@@ -5,6 +5,9 @@
 
 (constant (+SDL_INIT_VIDEO+ "SDL_INIT_VIDEO"))
 
+;; stream IO
+(cstruct c-sdl-rwops "SDL_RWops"
+         (type "type" :type :uint32))
 
 ;; consider use some c parser to generate this?
 (cenum c-sdl-window-flags

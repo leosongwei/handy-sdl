@@ -31,4 +31,3 @@
   (let ((size-in-byte (foreign-type-size type)))
     (dotimes (i size-in-byte)
       (setf (mem-aref dst :uint8 i) (mem-aref src :uint8 i)))))
-

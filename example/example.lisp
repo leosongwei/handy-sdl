@@ -8,6 +8,8 @@
 (sdl-renderer-present +renderer+)
 
 (defparameter +surface-tux+ (sdl-load-bmp "tux.bmp"))
+(defparameter +texture-tux+ (sdl-create-texture-from-surface +renderer+ +surface-tux+))
+(sdl-render-copy +renderer+ +texture-tux+ (null-pointer) (null-pointer))
 
 (sdl-poll-event-list)
 ;; 1001 is not defined as a value for enum type #<CFFI::FOREIGN-ENUM C-SDL-SCANCODE>.
