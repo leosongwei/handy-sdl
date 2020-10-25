@@ -1,12 +1,15 @@
-(require :cffi)
-(require :cffi-grovel)
-(use-package :cffi)
+;; (require :cffi)
+;; (require :cffi-grovel)
+;; (use-package :cffi)
 
-(load (cffi-grovel:process-grovel-file "sdl-keyboard-grovel.lisp" "/dev/shm/_sdl_keyboard.o"))
-(load (cffi-grovel:process-grovel-file "sdl-grovel.lisp" "/dev/shm/_sdl.o"))
+;; (load (cffi-grovel:process-grovel-file "sdl-keyboard-grovel.lisp" "/dev/shm/_sdl_keyboard.o"))
+;; (load (cffi-grovel:process-grovel-file "sdl-grovel.lisp" "/dev/shm/_sdl.o"))
 
-(load-foreign-library "libSDL2-2.0.so")
-(load-foreign-library "libSDL2_image-2.0.so.0")
+(in-package :handy-sdl)
+
+(defun load-sdl ()
+  (load-foreign-library "libSDL2-2.0.so")
+  (load-foreign-library "libSDL2_image-2.0.so.0"))
 
 (defcfun ("SDL_Init" c-sdl-init) :int (flags :int))
 
