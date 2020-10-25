@@ -2,6 +2,7 @@
   (:use #:cl
         #:cffi)
   (:export
+   #:load-sdl
    #:sdl-error
    #:sdl-init
    ;; window
