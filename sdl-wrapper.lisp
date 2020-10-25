@@ -23,7 +23,7 @@
 ;; Window
 
 (defstruct sdl-window
-  (ptr #.(null-pointer)))
+  (ptr (null-pointer)))
 
 (defun sdl-create-window (title x y w h &optional flags)
   (let ((c-flags 0))
@@ -38,7 +38,7 @@
 ;; --------------------------------------------------
 ;; Renderer
 (defstruct sdl-renderer
-  (ptr #.(null-pointer)))
+  (ptr (null-pointer)))
 
 (defun sdl-create-renderer (sdl-window flags)
   (let ((c-flags 0))
@@ -57,8 +57,8 @@
 ;; --------------------------------------------------
 ;; Surface & Texture
 
-(defstruct sdl-texture (ptr #.(null-pointer)))
-(defstruct sdl-surface (ptr #.(null-pointer)))
+(defstruct sdl-texture (ptr (null-pointer)))
+(defstruct sdl-surface (ptr (null-pointer)))
 
 (defun sdl-free-surface (surface)
   (c-sdl-freesurface (sdl-surface-ptr surface)))

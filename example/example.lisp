@@ -1,3 +1,9 @@
+(require :handy-sdl)
+(require :cffi)
+(use-package :handy-sdl)
+
+(handy-sdl::load-sdl)
+
 (sdl-init '(:video))
 
 (defparameter +window1+  (sdl-create-window "hello!" 1000 800 400 400

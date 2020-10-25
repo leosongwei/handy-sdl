@@ -1,3 +1,5 @@
+(in-package :handy-sdl)
+
 (pkg-config-cflags "sdl2")
 (include "SDL_scancode.h")
 (include "SDL_keycode.h")

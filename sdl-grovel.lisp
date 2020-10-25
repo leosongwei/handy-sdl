@@ -1,3 +1,5 @@
+(in-package :handy-sdl)
+
 (pkg-config-cflags "sdl2")
 
 (include "SDL.h")
