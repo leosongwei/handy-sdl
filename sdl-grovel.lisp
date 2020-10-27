@@ -131,6 +131,12 @@
 (constant (+SDL_PRESSED+ "SDL_PRESSED"))
 (constant (+SDL_RELEASED+ "SDL_RELEASED"))
 
+(constant (+SDL_BUTTON_LMASK+ "SDL_BUTTON_LMASK"))
+(constant (+SDL_BUTTON_MMASK+ "SDL_BUTTON_MMASK"))
+(constant (+SDL_BUTTON_RMASK+ "SDL_BUTTON_RMASK"))
+(constant (+SDL_BUTTON_X1MASK+ "SDL_BUTTON_X1MASK"))
+(constant (+SDL_BUTTON_X2MASK+ "SDL_BUTTON_X2MASK"))
+
 ;; ---------------------------------------------
 ;; Event
 

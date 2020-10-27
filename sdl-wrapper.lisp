@@ -111,10 +111,41 @@
     result))
 ;; (sdl-keymod-list #b1111111111000011)
 
+(defparameter +mouse-mask-values+
+  `((:SDL_BUTTON_LMASK ,+SDL_BUTTON_LMASK+)
+    (:SDL_BUTTON_MMASK ,+SDL_BUTTON_MMASK+)
+    (:SDL_BUTTON_RMASK ,+SDL_BUTTON_RMASK+)
+    (:SDL_BUTTON_X1MASK ,+SDL_BUTTON_X1MASK+)
+    (:SDL_BUTTON_X2MASK ,+SDL_BUTTON_X2MASK+)))
+
+(defun sdl-mouse-state-list (mouse-state-num)
+  (let ((result '()))
+    (dolist (name-and-mask +mouse-mask-values+)
+      (destructuring-bind (state-name mask) name-and-mask
+        (if (not (= 0 (logand mask mouse-state-num)))
+            (push state-name result))))
+    result))
+;; (sdl-mouse-state-list #b00001)
+
 ;; --------------------------------------------------
 ;; Event
 
 (defun sdl-window-event-plist (c-sdl-event)
+  "sdl-window-event-plist
+
+   format:
+   (:TYPE :SDL_WINDOWEVENT
+    :EVENT SDL_WindowEventID
+    :DATA1 num :DATA2 num
+    :WINDOWID num :TIMESTAMP num)
+
+   example:
+   (:TYPE :SDL_WINDOWEVENT
+    :EVENT :SDL_WINDOWEVENT_LEAVE
+    :DATA1 0 :DATA2 0
+    :WINDOWID 2 :TIMESTAMP 63992)
+   "
+
   (let* ((property (getf (convert-from-foreign c-sdl-event '(:struct c-sdl-event))
                          :window))
          (event (foreign-enum-keyword 'c-sdl-window-event-id (getf property :event))))
@@ -126,12 +157,59 @@
             :data2 ,(getf property :data2))))
 
 (defun sdl-mouse-motion-event-plist (c-sdl-event)
+  "sdl-mouse-motion-event-plist
+
+  refer: SDL_MouseMotionEvent
+
+  format:
+  (:TYPE :SDL_MOUSEMOTION
+   :YREL num :XREL num
+   :Y num :X num
+   :STATE (mask ...)
+   :WHICH num
+   :WINDOWID num :TIMESTAMP num)
+
+  example:
+  (:TYPE :SDL_MOUSEMOTION
+   :YREL 0 :XREL 0
+   :Y 126 :X 3
+   :STATE NIL
+   :WHICH 0
+   :WINDOWID 2 :TIMESTAMP 96811)
+  (:TYPE :SDL_MOUSEMOTION
+   :YREL -1 :XREL 0
+   :Y 146 :X 209
+   :STATE (:SDL_BUTTON_LMASK)
+   :WHICH 0
+   :WINDOWID 2 :TIMESTAMP 63992)
+  "
   (let* ((property (getf (convert-from-foreign c-sdl-event '(:struct c-sdl-event))
-                         :motion)))
+                         :motion))
+         (mouse-state-num (getf property :state)))
     (setf (getf property :type) :SDL_MOUSEMOTION)
+    (setf (getf property :state) (sdl-mouse-state-list mouse-state-num))
     property))
 
 (defun sdl-keyboard-event-plist (c-sdl-event)
+  "sdl-keyboard-event-plist
+
+  refer: SDL_KeyboardEvent
+
+  format:
+  (:TYPE type
+   :KEYSYM (:MOD (SDL_Keymod ...) :sym SDL_keycode :SCANCODE SDL_Scancode)
+   :REPEAT 0|1
+   :STATE :SDL_PRESSED|:SDL_RELEASED
+   :WINDOWID number
+   :TIMESTAMP number)
+
+  example:
+  (:TYPE :SDL_KEYDOWN
+   :KEYSYM (:MOD (:KMOD_NUM) :SYM :SDLK_A :SCANCODE :SDL_SCANCODE_A)
+   :REPEAT 0
+   :STATE :SDL_PRESSED
+   :WINDOWID 2 :TIMESTAMP 96824)
+  "
   (let* ((event-property (convert-from-foreign c-sdl-event '(:struct c-sdl-event)))
          (property (getf event-property :key))
          (type (foreign-enum-keyword 'c-sdl-event-type (getf event-property :type)))
