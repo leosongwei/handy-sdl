@@ -111,21 +111,27 @@
     result))
 ;; (sdl-keymod-list #b1111111111000011)
 
-(defparameter +mouse-mask-values+
-  `((:SDL_BUTTON_LMASK ,+SDL_BUTTON_LMASK+)
-    (:SDL_BUTTON_MMASK ,+SDL_BUTTON_MMASK+)
-    (:SDL_BUTTON_RMASK ,+SDL_BUTTON_RMASK+)
-    (:SDL_BUTTON_X1MASK ,+SDL_BUTTON_X1MASK+)
-    (:SDL_BUTTON_X2MASK ,+SDL_BUTTON_X2MASK+)))
+(eval-when (:compile-toplevel :load-toplevel)
+  (defparameter +mouse-mask-values+
+    `((,+SDL_BUTTON_LMASK+ :SDL_BUTTON_LMASK)
+      (,+SDL_BUTTON_MMASK+ :SDL_BUTTON_MMASK)
+      (,+SDL_BUTTON_RMASK+ :SDL_BUTTON_RMASK)
+      (,+SDL_BUTTON_X1MASK+ :SDL_BUTTON_X1MASK)
+      (,+SDL_BUTTON_X2MASK+ :SDL_BUTTON_X2MASK))))
 
 (defun sdl-mouse-state-list (mouse-state-num)
   (let ((result '()))
     (dolist (name-and-mask +mouse-mask-values+)
-      (destructuring-bind (state-name mask) name-and-mask
+      (destructuring-bind (mask state-name) name-and-mask
         (if (not (= 0 (logand mask mouse-state-num)))
             (push state-name result))))
     result))
 ;; (sdl-mouse-state-list #b00001)
+
+(defmacro sdl-mouse-button-symbol (mouse-button-num)
+  `(case ,mouse-button-num
+     ,@+mouse-mask-values+))
+;; (sdl-mouse-button-symbol 2)
 
 ;; --------------------------------------------------
 ;; Event
@@ -165,7 +171,7 @@
   (:TYPE :SDL_MOUSEMOTION
    :YREL num :XREL num
    :Y num :X num
-   :STATE (mask ...)
+   :STATE (button_mask_name ...)
    :WHICH num
    :WINDOWID num :TIMESTAMP num)
 
@@ -188,6 +194,45 @@
          (mouse-state-num (getf property :state)))
     (setf (getf property :type) :SDL_MOUSEMOTION)
     (setf (getf property :state) (sdl-mouse-state-list mouse-state-num))
+    property))
+
+(defun sdl-mouse-button-event-plist (c-sdl-event)
+  "sdl-mouse-button-event-plist
+
+   format:
+   (:TYPE :SDL_MOUSEBUTTONDOWN
+    :Y num :X num
+    :CLICKS 1|2
+    :STATE :SDL_PRESSED|:SDL_RELEASED
+    :BUTTON button_mask_name
+    :WHICH num
+    :WINDOWID num :TIMESTAMP num)
+
+   examples:
+   (:TYPE :SDL_MOUSEBUTTONDOWN
+    :Y 7 :X 7
+    :CLICKS 2
+    :STATE :SDL_PRESSED
+    :BUTTON :SDL_BUTTON_LMASK
+    :WHICH 0
+    :WINDOWID 2 :TIMESTAMP 8124)
+   (:TYPE :SDL_MOUSEBUTTONUP
+    :Y 7 :X 7
+    :CLICKS 2
+    :STATE :SDL_RELEASED
+    :BUTTON :SDL_BUTTON_LMASK
+    :WHICH 0
+    :WINDOWID 2 :TIMESTAMP 8124)
+   "
+  (let* ((event-property (convert-from-foreign c-sdl-event '(:struct c-sdl-event)))
+         (type (foreign-enum-keyword 'c-sdl-event-type (getf event-property :type)))
+         (property (getf event-property :button))
+         (button-num (getf property :button))
+         (state-num (getf property :state)))
+    (setf (getf property :type) type)
+    (setf (getf property :button) (sdl-mouse-button-symbol button-num))
+    (setf (getf property :state)
+          (if (= state-num +SDL_PRESSED+) :SDL_PRESSED :SDL_RELEASED))
     property))
 
 (defun sdl-keyboard-event-plist (c-sdl-event)
@@ -237,6 +282,8 @@
     (case type
       (:SDL_WINDOWEVENT (sdl-window-event-plist c-sdl-event))
       (:SDL_MOUSEMOTION (sdl-mouse-motion-event-plist c-sdl-event))
+      ((:SDL_MOUSEBUTTONDOWN :SDL_MOUSEBUTTONUP)
+       (sdl-mouse-button-event-plist c-sdl-event))
       ((:SDL_KEYUP :SDL_KEYDOWN) (sdl-keyboard-event-plist c-sdl-event))
       (otherwise `(:type ,type)))))
 

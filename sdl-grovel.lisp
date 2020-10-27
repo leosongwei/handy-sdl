@@ -167,8 +167,20 @@
          (:xrel "xrel" :type :int)
          (:yrel "yrel" :type :int))
 
+(cstruct c-sdl-mouse-button-event "SDL_MouseButtonEvent"
+         (:type "type" :type :uint32)
+         (:timestamp "timestamp" :type :uint32)
+         (:windowID "windowID" :type :uint32)
+         (:which "which" :type :uint32)
+         (:button "button" :type :uint8)
+         (:state "state" :type :uint8)
+         (:clicks "clicks" :type :uint8)
+         (:x "x" :type :int32)
+         (:y "y" :type :int32))
+
 (cstruct c-sdl-event "SDL_Event"
          (:type "type" :type :uint32)
          (:window "window" :type (:struct c-sdl-window-event))
          (:key "key" :type (:struct c-sdl-keyboard-event))
-         (:motion "motion" :type (:struct c-sdl-mouse-motion-event)))
+         (:motion "motion" :type (:struct c-sdl-mouse-motion-event))
+         (:button "button" :type (:struct c-sdl-mouse-button-event)))
