@@ -2,6 +2,8 @@
 
 (pkg-config-cflags "sdl2")
 
+(include "SDL.h")
+(include "SDL_video.h")
 ;; OpenGL
 
 (cenum c-sdl-GLattr
