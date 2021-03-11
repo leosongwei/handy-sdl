@@ -5,7 +5,15 @@
 (include "SDL.h")
 (include "SDL_video.h")
 
+(constant (+SDL_INIT_TIMER+ "SDL_INIT_TIMER"))
+(constant (+SDL_INIT_AUDIO+ "SDL_INIT_AUDIO"))
 (constant (+SDL_INIT_VIDEO+ "SDL_INIT_VIDEO"))
+(constant (+SDL_INIT_JOYSTICK+ "SDL_INIT_JOYSTICK"))
+(constant (+SDL_INIT_HAPTIC+ "SDL_INIT_HAPTIC"))
+(constant (+SDL_INIT_GAMECONTROLLER+ "SDL_INIT_GAMECONTROLLER"))
+(constant (+SDL_INIT_EVENTS+ "SDL_INIT_EVENTS"))
+(constant (+SDL_INIT_EVERYTHING+ "SDL_INIT_EVERYTHING"))
+(constant (+SDL_INIT_NOPARACHUTE+ "SDL_INIT_NOPARACHUTE"))
 
 ;; stream IO
 (cstruct c-sdl-rwops "SDL_RWops"

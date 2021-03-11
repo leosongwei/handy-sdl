@@ -9,15 +9,23 @@
 
 ;; -------------------------------------------------
 
+
 (defun sdl-init (flags)
   (let ((c-flags 0))
     (dolist (flag flags)
-      (let ((flag-value (case flag
-                          (:video +SDL_INIT_VIDEO+)
-                          (otherwise 0))))
+      (let ((flag-value
+             (case flag
+               (:SDL_INIT_TIMER +SDL_INIT_TIMER+)
+               (:SDL_INIT_AUDIO +SDL_INIT_AUDIO+)
+               (:SDL_INIT_VIDEO +SDL_INIT_VIDEO+)
+               (:SDL_INIT_JOYSTICK +SDL_INIT_JOYSTICK+)
+               (:SDL_INIT_HAPTIC +SDL_INIT_HAPTIC+)
+               (:SDL_INIT_GAMECONTROLLER +SDL_INIT_GAMECONTROLLER+)
+               (:SDL_INIT_EVENTS +SDL_INIT_EVENTS+)
+               (:SDL_INIT_EVERYTHING +SDL_INIT_EVERYTHING+)
+               (:SDL_INIT_NOPARACHUTE +SDL_INIT_NOPARACHUTE+))))
         (setf c-flags (logior c-flags flag-value))))
     (c-sdl-init c-flags)))
-;; (sdl-init '(:video))
 
 ;; -------------------------------------------------
 ;; Window

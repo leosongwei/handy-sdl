@@ -3,7 +3,7 @@
 (require :cffi)
 
 (handy-sdl:load-sdl)
-(handy-sdl:sdl-init '(:video))
+(handy-sdl:sdl-init '(:SDL_INIT_VIDEO))
 
 (defparameter +window1+  (handy-sdl:sdl-create-window "hello!" 1000 800 400 400
                                             '(:sdl_window_resizable)))
