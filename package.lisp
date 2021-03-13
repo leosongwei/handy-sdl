@@ -29,4 +29,11 @@
    #:sdl-keymod-list
    #:sdl-wait-event
    #:sdl-poll-event
-   #:sdl-poll-event-list))
+   #:sdl-poll-event-list
+   ;; opengl
+   #:sdl-glcontext
+   #:sdl-gl-setattribute
+   #:sdl-gl-createcontext
+   #:sdl-gl-deletecontext
+   #:sdl-gl-swapwindow
+   ))

@@ -1,3 +1,5 @@
+(in-package :handy-sdl)
+
 (defun assign-to-foreign (ptr root-type value-tree)
   (assert (= 0 (mod (length value-tree) 2)))
   (let ((values (copy-tree value-tree)))

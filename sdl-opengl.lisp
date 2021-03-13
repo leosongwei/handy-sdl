@@ -1,7 +1,5 @@
 (in-package :handy-sdl)
 
-(deftype sdl-glattr () ( (cffi:foreign-enum-keyword-list 'c-sdl-glattr)))
-
 (cffi:defcfun (c-sdl-gl-setattribute "SDL_GL_SetAttribute") :int
   (attr :uchar) (value :int))
 
@@ -15,6 +13,7 @@
   (window :pointer))
 
 ;; --------------------------------------------------------------------------
+
 (define-enum-keyword-type sdl-glattr c-sdl-glattr)
 
 (defun sdl-gl-setattribute (attr value)
