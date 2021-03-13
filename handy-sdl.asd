@@ -12,4 +12,5 @@
    (:cffi-grovel-file "sdl-opengl-grovel")
    (:cffi-grovel-file "sdl-grovel")
    (:file "sdl-binding")
-   (:file "sdl-wrapper")))
+   (:file "sdl-wrapper")
+   (:file "sdl-opengl")))

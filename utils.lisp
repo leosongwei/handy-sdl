@@ -31,3 +31,22 @@
   (let ((size-in-byte (foreign-type-size type)))
     (dotimes (i size-in-byte)
       (setf (mem-aref dst :uint8 i) (mem-aref src :uint8 i)))))
+
+(defmacro define-enum-keyword-type (name cffi-enum)
+  `(deftype ,name () '(member ,@(cffi:foreign-enum-keyword-list cffi-enum))))
+
+(defmacro def-list-type (type)
+  (let* ((name (concatenate 'string (symbol-name type)))
+         (type-symbol (intern (concatenate 'string name "-LIST")))
+         (typep-name (intern (concatenate 'string name "-LIST-P"))))
+    `(progn
+       (defun ,typep-name (list)
+         (dolist (e list t)
+           (if (not (typep e (quote ,type)))
+               (return nil))))
+       (deftype ,type-symbol () '(satisfies ,typep-name)))))
+;; (def-list-type integer)
+;; (let ((l '(1 2 3 4))
+;;       (empty '()))
+;;   (check-type l integer-list)
+;;   (check-type empty integer-list))
