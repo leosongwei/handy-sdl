@@ -22,6 +22,12 @@
   (c-sdl-gl-setattribute (cffi:foreign-enum-value 'c-sdl-glattr attr)
                          value))
 
+(define-enum-keyword-type sdl-glprofile c-sdl-glprofile)
+
+(defun sdl-gl-set-context-profile-mask (flag)
+  (check-type flag sdl-glprofile)
+  (sdl-gl-setattribute :SDL_GL_CONTEXT_PROFILE_MASK (cffi:foreign-enum-value 'c-sdl-glprofile flag)))
+
 (defstruct sdl-glcontext (ptr (null-pointer)))
 
 (defun sdl-gl-createcontext (sdl-window)

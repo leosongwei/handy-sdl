@@ -33,6 +33,7 @@
    ;; opengl
    #:sdl-glcontext
    #:sdl-gl-setattribute
+   #:sdl-gl-set-context-profile-mask
    #:sdl-gl-createcontext
    #:sdl-gl-deletecontext
    #:sdl-gl-swapwindow
