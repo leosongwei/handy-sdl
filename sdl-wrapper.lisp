@@ -33,9 +33,13 @@
 (defstruct sdl-window
   (ptr (null-pointer)))
 
-(defun sdl-create-window (title x y w h &optional flags)
+(define-enum-keyword-type sdl-window-flag c-sdl-window-flags)
+(define-list-type sdl-window-flag-list sdl-window-flag)
+
+(defun sdl-create-window (title x y w h &optional sdl-window-flag-list)
+  (check-type sdl-window-flag-list sdl-window-flag-list)
   (let ((c-flags 0))
-    (dolist (flag flags)
+    (dolist (flag sdl-window-flag-list)
       (setf c-flags (logior c-flags (foreign-enum-value 'c-sdl-window-flags flag))))
     (with-foreign-string (c-title title)
       (make-sdl-window :ptr (c-sdl-createwindow c-title x y w h c-flags)))))
